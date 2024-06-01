@@ -7,7 +7,7 @@ if (isset($_GET['delid'])) {
 
     $cid = intval($_GET['delid']);
 
-    $sql = "DELETE FROM consumidor WHERE idConsumidor=:cid";
+    $sql = "DELETE FROM consumidor WHERE idConsumidor =:cid";
 
     $query = $dbh->prepare($sql);
     $query->bindParam(':cid', $cid, PDO::PARAM_STR);

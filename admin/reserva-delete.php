@@ -7,7 +7,7 @@ if (isset($_GET['delrid'])) {
 
     $rid = intval($_GET['delrid']);
 
-    $sql = "DELETE FROM reserva WHERE idReserva=:rid";
+    $sql = "DELETE FROM reserva WHERE idReserva =:rid";
 
     $query = $dbh->prepare($sql);
     $query->bindParam(':rid', $rid, PDO::PARAM_STR);

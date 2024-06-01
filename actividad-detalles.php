@@ -7,6 +7,7 @@ include ('admin/check/util.php');
 if (isset($_POST['confirmaReserva'])) {
 
     $aid = intval($_GET['actid']);
+
     $umail = $_SESSION['entraConsumidor'];
 
     $fechahora = $_POST['selectFechaHora'];
@@ -14,7 +15,7 @@ if (isset($_POST['confirmaReserva'])) {
     $comments = $_POST['comentarios'];
     $statusR = 0;
 
-    $sql = "SELECT * FROM actividad WHERE idActividad=:aid";
+    $sql = "SELECT * FROM actividad WHERE idActividad =:aid";
 
     $query = $dbh->prepare($sql);
     $query->bindParam(':aid', $aid, PDO::PARAM_STR);
@@ -28,16 +29,16 @@ if (isset($_POST['confirmaReserva'])) {
         }
     }
 
-    $sql = "SELECT idConsumidor FROM consumidor WHERE emailConsumidor=:umail";
+    $sql2 = "SELECT idConsumidor FROM consumidor WHERE emailConsumidor =:umail";
 
-    $query = $dbh->prepare($sql);
-    $query->bindParam(':umail', $umail, PDO::PARAM_STR);
-    $query->execute();
-    $results = $query->fetchAll(PDO::FETCH_OBJ);
+    $query2 = $dbh->prepare($sql2);
+    $query2->bindParam(':umail', $umail, PDO::PARAM_STR);
+    $query2->execute();
+    $results2 = $query2->fetchAll(PDO::FETCH_OBJ);
 
-    if ($query->rowCount() > 0) {
-        foreach ($results as $result) {
-            $iduser = $result->idConsumidor;
+    if ($query2->rowCount() > 0) {
+        foreach ($results2 as $result2) {
+            $iduser = $result2->idConsumidor;
         }
     }
 
@@ -183,12 +184,11 @@ if (isset($_POST['confirmaReserva'])) {
                                         <?php echo htmlentities($result->idActividad); ?>
 
                                         <!-- BOOLEAN -->
-                                        <b>| Condición física:</b>
                                         <?php
                                         if ($result->condicionFisica == 1) {
-                                            echo '<b>Necesaria</b>';
+                                            echo '|&nbsp;<b style="color:#FF6019 !important;">Condición física: Necesaria</b>';
                                         } else {
-                                            echo 'No necesaria';
+                                            echo '|&nbsp;<b>Condición física:</b>&nbsp;No necesaria';
                                         }
                                         ?>
                                     </p>
@@ -351,10 +351,11 @@ if (isset($_POST['confirmaReserva'])) {
                         }
                     }
                     ?>
-
+                    
                     <div class="container">
                         <div class="selectact_top">
                             <form name="reserva" method="POST">
+
                                 <div class="selectact-info animated wow fadeInUp animated" data-wow-duration="1200ms"
                                     data-wow-delay="500ms"
                                     style="visibility: visible; animation-duration: 1200ms; animation-delay: 500ms; animation-name: fadeInUp; margin-top: -3em;">
@@ -377,10 +378,21 @@ if (isset($_POST['confirmaReserva'])) {
                                                     if ($fh) {
                                                         echo "<option value=" . $fh . ">" . dameFechaEsp($fh) . " | " . date('H:i', strtotime($fh)) . "</option>";
                                                     }
+
                                                 }
                                                 ?>
                                             </select>
                                         </div>
+                                        
+                                        <?php
+
+                                        $plazasReservadasString = $result->plazasOcupadas;
+
+                                        $distintosNrosPlazasLibres = explode(",", $plazasReservadasString, -1);
+
+                                        // var_dump($distintosNrosPlazasLibres);
+                                    
+                                        ?>
 
                                         <script>
 
@@ -389,25 +401,71 @@ if (isset($_POST['confirmaReserva'])) {
                                             select.addEventListener("change", function () {
 
                                                 var selectedOption = this.options[this.selectedIndex];
+                                                // window.alert(selectedOption.index);
 
-                                                // selectedOption.index;
                                                 var select2 = document.getElementById("solicitaPlazasID");
-                                                // select2.max = <?php ?>;
-                                                select2.value = <?php ?>;
+                                                var noHayPlazasMsg = document.getElementById('noHayPlazasID');
+                                                var activaSubmit = document.getElementById('confirmaReservaID');
 
-
-                                                // window.alert("Option selected: " + selectedOption.value);
-                                                window.alert("Index selected: " + selectedOption.index);
+                                                if (selectedOption.index == 1) {
+                                                    select2.disabled = false;
+                                                    select2.min = 1;
+                                                    select2.max = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[0]; ?>;
+                                                    select2.value = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[0]; ?>;
+                                                    if (select2.max == 0) {
+                                                        select2.disabled = true;
+                                                        noHayPlazasMsg.innerText = "NO HAY PLAZAS!";
+                                                        activaSubmit.disabled = true;
+                                                    } else {
+                                                        noHayPlazasMsg.innerText = "";
+                                                        activaSubmit.disabled = false;
+                                                    }
+                                                } else if (selectedOption.index == 2) {
+                                                    select2.disabled = false;
+                                                    select2.min = 1;
+                                                    select2.max = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[1]; ?>;
+                                                    select2.value = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[1]; ?>;
+                                                    if (select2.max == 0) {
+                                                        select2.disabled = true;
+                                                        noHayPlazasMsg.innerText = "NO HAY PLAZAS!";
+                                                        activaSubmit.disabled = true;
+                                                    } else {
+                                                        noHayPlazasMsg.innerText = "";
+                                                        activaSubmit.disabled = false;
+                                                    }
+                                                } else if (selectedOption.index == 3) {
+                                                    select2.disabled = false;
+                                                    select2.min = 1;
+                                                    select2.max = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[2]; ?>;
+                                                    select2.value = <?php echo $result->maxPlazas - $distintosNrosPlazasLibres[2]; ?>;
+                                                    if (select2.max == 0) {
+                                                        noHayPlazasMsg.innerText = "NO HAY PLAZAS!";
+                                                        select2.disabled = true;
+                                                        activaSubmit.disabled = true;
+                                                    } else {
+                                                        noHayPlazasMsg.innerText = "";                                                        
+                                                        activaSubmit.disabled = false;
+                                                    }
+                                                } else {
+                                                    select2.disabled = true;
+                                                    select2.value = "Selecciona el número de reservas deseado";
+                                                    noHayPlazasMsg.innerText = "";
+                                                    activaSubmit.disabled = true;
+                                                }
                                             });
+
+
 
                                         </script>
 
                                         <div class="col-md-6 mr-2">
-                                            <label class="inputLabel">Número de RESERVAS</label>
+                                            <label class="inputLabel">Número de RESERVAS&nbsp;<span id="noHayPlazasID"
+                                                    style="color:red"></span></label>
                                             <input type="number" name="solicitaPlazas" id="solicitaPlazasID"
-                                                class="form-control" max="<?php echo $plazasDisponibles; ?>" min="1"
-                                                placeholder="Selecciona el número de reservas deseado" required>
+                                                class="form-control" placeholder="Selecciona el número de reservas deseado"
+                                                required disabled>
                                         </div>
+
                                         <ul>
                                             <li class="spe">
                                                 <label class="inputLabel">Comentarios</label>
@@ -415,9 +473,12 @@ if (isset($_POST['confirmaReserva'])) {
                                                     type="text"></textarea>
                                             </li>
                                         </ul>
-                                        <button type="submit" name="confirmaReserva" class="btn-primary btn">
+
+                                        <button type="submit" name="confirmaReserva" id="confirmaReservaID"
+                                            class="btn-primary btn" disabled>
                                             Confirma tu Reserva
                                         </button>
+
                                         <a href="demanda-solicitud.php?idadmin=<?php echo htmlentities($idadmin); ?>"
                                             class="view enlace-sencillo">DEMANDA para OFERTANTE :
                                             <?php echo "$nombre&nbsp;$apllidos"; ?>
@@ -441,9 +502,7 @@ if (isset($_POST['confirmaReserva'])) {
                     <?php
                 }
                 ?>
-
                 <div class="clearfix"></div>
-
             </div>
         </div>
         </div>

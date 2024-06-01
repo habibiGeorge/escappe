@@ -1,6 +1,35 @@
 <?php
 include ('check/login.php');
 check_login();
+
+if (isset($_GET['blockid'])) {
+
+    $bid = intval($_GET['blockid']);
+
+    $sql = "UPDATE actividad SET disponible = 0 WHERE idActividad =:bid";
+
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':bid', $bid, PDO::PARAM_STR);
+    $query->execute();
+
+    echo "<script>window.alert('La Actividad ha sido INHABILITADA');</script>";
+
+}
+
+if (isset($_GET['raid'])) {
+
+    $raid = intval($_GET['raid']);
+
+    $sql = "UPDATE actividad SET disponible = 1 WHERE idActividad =:raid";
+
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':raid', $raid, PDO::PARAM_STR);
+    $query->execute();
+
+    echo "<script>window.alert('La Actividad ha sido REACTIVADA');</script>";
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -93,11 +122,25 @@ check_login();
                                                             <td>
                                                                 <?php echo htmlentities($result->minPlazas); ?>
                                                             </td>
+                                                            <!-- Reservas Confirmadas -->
                                                             <td>
-                                                                <?php echo $result->plazasOcupadas; ?>
-                                                            </td>                                                                                                                        
+                                                                <?php
+                                                                $fechas = explode(",", $result->fechasHora, -1);
+                                                                $plazasComas = explode(",", $result->plazasOcupadas, -1);
+                                                                foreach ($fechas as $index => $result2) {
+                                                                    echo date('d-m-Y H:i', strtotime($fechas[$index])) . ' <i style="font-size:12px;color:green" class="fas">&#xf101;</i> ' . $plazasComas[$index] . "<br/>";
+                                                                }
+                                                                ?>
+                                                            </td>
+                                                            <!-- Plazas Libres -->
                                                             <td>
-                                                                <?php echo $result->maxPlazas - $result->plazasOcupadas; ?>
+                                                                <?php
+                                                                // $fechas = explode(",", $result->fechasHora,-1);
+                                                                // $plazasComas = explode(",", $result->plazasOcupadas,-1);
+                                                                foreach ($fechas as $index => $result2) {
+                                                                    echo date('H:i', strtotime($fechas[$index])) . "<i style='font-size:12px;color:green' class='fas'>&#xf101;</i>" . $result->maxPlazas - $plazasComas[$index] . "<br/>";
+                                                                }
+                                                                ?>
                                                             </td>
                                                             <td>
                                                                 <?php echo htmlentities($result->maxPlazas); ?>
@@ -110,6 +153,18 @@ check_login();
                                                                     href="actividad-update.php?aid=<?php echo htmlentities($result->idActividad); ?>"
                                                                     role="button">Editar
                                                                 </a>
+
+                                                                <?php if ($result->disponible == 1) { ?>
+                                                                    <a class="btn btn-primary btn-sm btn-warning" role="button"
+                                                                        href="actividad-gestion.php?blockid=<?php echo $result->idActividad; ?>"
+                                                                        onclick="return confirm('Realmente quieres INHABILITAR esta Actividad?')">Inhabilitar
+                                                                    </a>
+                                                                <?php } else { ?>
+                                                                    <a class="btn btn-primary btn-sm btn-succes" role="button"
+                                                                        href="actividad-gestion.php?raid=<?php echo $result->idActividad; ?>"
+                                                                        onclick="return confirm('Realmente quieres REACTIVAR esta Actividad?')">Reactivar
+                                                                    </a>
+                                                                <?php } ?>
 
                                                                 <a class="btn btn-primary btn-sm btn-danger" role="button"
                                                                     href="actividad-delete.php?delid=<?php echo htmlentities($result->idActividad); ?>"
@@ -205,8 +260,19 @@ check_login();
                                                                         href="actividad-update.php?aid=<?php echo htmlentities($result->idActividad); ?>"
                                                                         role="button">Editar
                                                                     </a>
+                                                                <?php if ($result->disponible == 1) { ?>
+                                                                        <a class="btn btn-primary btn-sm btn-warning" role="button"
+                                                                            href="actividad-gestion.php?blockid=<?php echo htmlentities($result->idActividad); ?>"
+                                                                            onclick="return confirm('Realmente quieres INHABILITAR esta Actividad?')">Inhabilitar
+                                                                        </a>
+                                                                <?php } else { ?>
+                                                                        <a class="btn btn-primary btn-sm btn-succes" role="button"
+                                                                            href="actividad-gestion.php?raid=<?php echo htmlentities($result->idActividad); ?>"
+                                                                            onclick="return confirm('Realmente quieres REACTIVAR esta Actividad?')">Reactivar
+                                                                        </a>
+                                                                <?php } ?>
 
-                                                                    <a class="btn btn-primary btn-sm btn-danger" role="button"
+                                                                    <a class="btn btn-primary btn-sm btn-danger" role="button" 
                                                                         href="actividad-delete.php?delid=<?php echo htmlentities($result->idActividad); ?>"
                                                                         onclick="return confirm('Realmente quieres ELIMINAR esta Actividad?')">Borrar
                                                                     </a>

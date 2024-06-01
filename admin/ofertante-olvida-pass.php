@@ -96,7 +96,7 @@ if (isset ($_POST['submit'])) {
                                         </div>
                                         <div class="text-center mt-4 font-weight-light">
                                             <a href="login.php" class="text-primary">
-                                                Vuelve al Login
+                                                Volver al Login
                                             </a>
                                         </div>
                                     </form>
@@ -111,7 +111,7 @@ if (isset ($_POST['submit'])) {
     <!-- FIN Contenido del Login -->
     
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>    
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="js/personal-admin.min.js"></script>
 </body>

@@ -39,21 +39,19 @@ if (strlen($_SESSION['entraConsumidor']) == 0) {
             foreach ($results as $result) {
 
                 $fdate = $result->fechaRealizada;
-
-                // $a=explode("/",$fdate);
-                // $val=array_reverse($a);
-                // $mydate =implode("/",$val);
+                
                 $cdate = date('Y/m/d');
-                $date1 = date_create("$cdate");//fecha actual
-                $date2 = date_create("$fdate");//fecha de la cancelación
+                $date1 = date_create("$cdate");// fecha actual
+                $date2 = date_create("$fdate");// fecha de la cancelación
                 $diff = date_diff($date1, $date2);
                 $df = $diff->format("%a");
-                // echo "<script>alert($df)</script>";
 
                 if ($df > 1) {
                     $status = 2;
                     $cancelby = "usuario";
+
                     $sql = "UPDATE demanda SET estado =:status, canceladaPor=:cancelby WHERE idConsumidor=:idconsum AND idReserva=:bid";
+                    
                     $query = $dbh->prepare($sql);
                     $query->bindParam(':bid', $bid, PDO::PARAM_STR);
                     $query->bindParam(':idconsum', $idConsum, PDO::PARAM_STR);

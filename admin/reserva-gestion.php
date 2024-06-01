@@ -9,7 +9,7 @@ if (isset($_REQUEST['bkid'])) {
     $status = 2;
     $cancelby = 'admin';
 
-    $sql = "UPDATE reserva SET estado=:status,canceladaPor=:cancelby WHERE idReserva=:bid";
+    $sql = "UPDATE reserva SET estado =:status,canceladaPor =:cancelby WHERE idReserva=:bid";
 
     $query = $dbh->prepare($sql);
     $query->bindParam(':status', $status, PDO::PARAM_STR);
@@ -29,10 +29,9 @@ if (isset($_REQUEST['bckid'])) {
 
     $bcid = intval($_GET['bckid']);
     $status = 1;
-    // $cancelby = 'admin';
 
-    $sql0 = "SELECT * FROM reserva WHERE idReserva=:bcid";
-    
+    $sql0 = "SELECT * FROM reserva WHERE idReserva =:bcid";
+
     $query0 = $dbh->prepare($sql0);
     $query0->bindParam(':bcid', $bcid, PDO::PARAM_STR);
     $query0->execute();
@@ -40,28 +39,59 @@ if (isset($_REQUEST['bckid'])) {
 
     if ($query0->rowCount() > 0) {
 
-        foreach ($results0 as $result0) { 
-            $plazas =  $result0->nroPlazas;
-            $plazas .= ",";
+        foreach ($results0 as $result0) {
             $idAct = $result0->idActividad;
+            $fechaReserva = $result0->fechaHora;
+            $plazasReservadas = $result0->nroPlazas;
         }
     }
 
-    $sql1 = "UPDATE actividad SET plazasOcupadas=:plazas WHERE idActividad=:idact";
+    $sql8 = "SELECT * FROM actividad WHERE idActividad =:idact";
+
+    $query8 = $dbh->prepare($sql8);
+    $query8->bindParam(':idact', $idAct, PDO::PARAM_STR);
+    $query8->execute();
+    $results8 = $query8->fetchAll(PDO::FETCH_OBJ);
+
+    foreach ($results8 as $index => $result8) {
+
+        $stringDeFechas = $result8->fechasHora;
+        $plazasComas = $result8->plazasOcupadas;
+
+    }
+
+    $string_000 = explode(",", $plazasComas, -1);
+
+    $string_1 = $stringDeFechas;
+    $string_2 = explode(",", $string_1, -1);
     
+    foreach ($string_2 as $index => $aEncontrar) {
+
+        if (strcmp($fechaReserva, $string_2[$index]) == 0) {
+            $string_000[$index] = strval($plazasReservadas);    
+        } else {
+            // $string_000[$index] = ;
+            // var_dump("NOOOOOOOOOOOOOOOOOOOOOOOO");
+        }
+    }
+    $actualizaPlazasOcupadas = implode(",", $string_000);
+    $actualizaPlazasOcupadas .= ",";
+
+
+    $sql1 = "UPDATE actividad SET plazasOcupadas =:plazas WHERE idActividad =:idact";
+
     $query1 = $dbh->prepare($sql1);
-    $query1->bindParam(':plazas', $plazas, PDO::PARAM_STR);
+    $query1->bindParam(':plazas', $actualizaPlazasOcupadas, PDO::PARAM_STR);
     $query1->bindParam(':idact', $idAct, PDO::PARAM_STR);
     $query1->execute();
 
+    $sql = "UPDATE reserva SET estado =:status WHERE idReserva =:bcid";
 
-    $sql = "UPDATE reserva SET estado=:status WHERE idReserva=:bcid";
-    
     $query = $dbh->prepare($sql);
     $query->bindParam(':status', $status, PDO::PARAM_STR);
     $query->bindParam(':bcid', $bcid, PDO::PARAM_STR);
     $query->execute();
-    
+
     if ($query->execute()) {
         echo '<script>alert("Reserva CONFIRMADA satisfactoriamente")</script>';
     } else {
@@ -104,7 +134,7 @@ if (isset($_REQUEST['bckid'])) {
 
                 <div class="container-fluid" id="container-wrapper">
 
-                    <h3 class="m-0 font-weight-bold text-primary">Gestiona RESERVAS recibidas</h3><br>
+                    <h3 class="m-0 font-weight-bold text-primary">Gestiona RESERVAS recibidas</h3><br>                    
 
                     <div class="row">
 
@@ -121,9 +151,9 @@ if (isset($_REQUEST['bckid'])) {
                                                 <th>#</th>
                                                 <th>Actividad</th>
                                                 <th>Fecha Hora</th>
-                                                <th>Plazas solicitadas</th>                                                
+                                                <th>Plazas solicitadas</th>
                                                 <th>Comentarios</th>
-                                                <th>Del Consumidor:</th>                                                
+                                                <th>Del Consumidor:</th>
                                                 <th>Teléfono</th>
                                                 <th>Email</th>
                                                 <th>Realizada</th>
@@ -137,7 +167,7 @@ if (isset($_REQUEST['bckid'])) {
                                             $idadmin = $_SESSION['adminid'];
 
                                             $sql = "SELECT * FROM reserva WHERE idOfertante =:idadmin";
-                                            
+
                                             $query = $dbh->prepare($sql);
                                             $query->bindParam(':idadmin', $idadmin, PDO::PARAM_STR);
                                             $query->execute();
@@ -152,7 +182,7 @@ if (isset($_REQUEST['bckid'])) {
                                                     $idConsumer = $result->idConsumidor;
 
                                                     $sql1 = "SELECT * FROM actividad WHERE idActividad =:idactivity";
-                                                    
+
                                                     $query1 = $dbh->prepare($sql1);
                                                     $query1->bindParam(':idactivity', $idActivity, PDO::PARAM_STR);
                                                     $query1->execute();
@@ -164,7 +194,7 @@ if (isset($_REQUEST['bckid'])) {
                                                     }
 
                                                     $sql3 = "SELECT * FROM consumidor WHERE idConsumidor =:iduser";
-                                                    
+
                                                     $query3 = $dbh->prepare($sql3);
                                                     $query3->bindParam(':iduser', $idConsumer, PDO::PARAM_STR);
                                                     $query3->execute();
@@ -190,7 +220,7 @@ if (isset($_REQUEST['bckid'])) {
                                                         </td>
                                                         <!-- Fecha Hora -->
                                                         <td>
-                                                            <?php echo date('d-m-Y',strtotime($result->fechaHora))."<br/>".date('H:i',strtotime($result->fechaHora)); ?>
+                                                            <?php echo date('d-m-Y', strtotime($result->fechaHora)) . "<br/>" . date('H:i', strtotime($result->fechaHora)); ?>
                                                         </td>
                                                         <!-- Nro Reservas -->
                                                         <td>
@@ -203,7 +233,7 @@ if (isset($_REQUEST['bckid'])) {
                                                         <!-- Del Consumidor -->
                                                         <td>
                                                             <?php echo $nombreApllidos; ?>
-                                                        </td>                                                        
+                                                        </td>
                                                         <!-- Teléfono -->
                                                         <td>
                                                             <?php echo $tlfn; ?>
@@ -214,9 +244,9 @@ if (isset($_REQUEST['bckid'])) {
                                                         </td>
                                                         <!-- Fecha Realizada -->
                                                         <td>
-                                                            <?php echo date('d-m-Y',strtotime($result->fechaRealizada))."<br/>".date('H:i',strtotime($result->fechaRealizada)); ?>
+                                                            <?php echo date('d-m-Y', strtotime($result->fechaRealizada)) . "<br/>" . date('H:i', strtotime($result->fechaRealizada)); ?>
                                                         </td>
-                                                        
+
                                                         <td>
                                                             <?php if ($result->estado == 0) {
                                                                 echo "<span style='color:#ffa426'><b>Pendiente de confirmar</b></span>";
@@ -225,10 +255,10 @@ if (isset($_REQUEST['bckid'])) {
                                                                 echo "<span style='color:#00ff00'><b>Confirmada</b></span>";
                                                             }
                                                             if ($result->estado == 2 && $result->canceladaPor == 'admin') {
-                                                                echo "<span style='color:#0000ff'>Canceleda por Ofertante </span>" . date('d-m-Y',strtotime($result->fechActualizada))."<br/>".date('H:i',strtotime($result->fechActualizada));
+                                                                echo "<span style='color:#0000ff'>Canceleda por Ofertante </span>" . date('d-m-Y', strtotime($result->fechActualizada)) . "<br/>" . date('H:i', strtotime($result->fechActualizada));
                                                             }
                                                             if ($result->estado == 2 && $result->canceladaPor == 'usuario') {
-                                                                echo "<span style='color:#ff0000'>Cancelada por Consumidor </span>" . date('d-m-Y',strtotime($result->fechActualizada))."<br/>".date('H:i',strtotime($result->fechActualizada));
+                                                                echo "<span style='color:#ff0000'>Cancelada por Consumidor </span>" . date('d-m-Y', strtotime($result->fechActualizada)) . "<br/>" . date('H:i', strtotime($result->fechActualizada));
 
                                                             }
                                                             ?>
@@ -251,13 +281,13 @@ if (isset($_REQUEST['bckid'])) {
                                                         <?php } else { ?>
                                                                 <td>
                                                                     <a class="btn btn-denger" role="button"
-                                                                    href="reserva-gestion.php?bkid=<?php echo htmlentities($result->idReserva); ?>"
-                                                                    onclick="return confirm('Realmente quieres CANCELAR esta Reserva?')">Cancelar
+                                                                        href="reserva-gestion.php?bkid=<?php echo htmlentities($result->idReserva); ?>"
+                                                                        onclick="return confirm('Realmente quieres CANCELAR esta Reserva?')">Cancelar
                                                                     </a>
 
                                                                     <a class="btn btn-success" role="button"
-                                                                    href="reserva-gestion.php?bckid=<?php echo htmlentities($result->idReserva); ?>"
-                                                                    onclick="return confirm('Realmente quieres CONFIRMAR esta Reserva?')">Confirmar
+                                                                        href="reserva-gestion.php?bckid=<?php echo htmlentities($result->idReserva); ?>"
+                                                                        onclick="return confirm('Realmente quieres CONFIRMAR esta Reserva?')">Confirmar
                                                                     </a>
                                                                 </td>
                                                             <?php
@@ -278,6 +308,7 @@ if (isset($_REQUEST['bckid'])) {
             <?php include ('includes/footer.php'); ?>
         </div>
     </div>
+
 
     <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
 

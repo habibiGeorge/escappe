@@ -199,19 +199,11 @@ if (isset($_POST['perfilUpdate'])) {
     <?php include ('includes/quit-modal.php'); ?>
 
     <script src="vendor/jquery/jquery.min.js"></script>
-    <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/personal-admin.min.js"></script>
 
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-    <script>
-        // $(document).ready(function () {
-        //     $('#dataTable').DataTable();
-        //     $('#dataTableHover').DataTable();
-        // });
-    </script>
 
 </body>
 

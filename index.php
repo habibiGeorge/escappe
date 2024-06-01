@@ -122,7 +122,7 @@ include ('includes/dbconnection.php');
                 // FIN DEL BUSCADOR
             } else {
                 // Selección aleatoria de Actividades mostrada si no se solicita ninguna búsqueda
-                $sql = "SELECT * FROM actividad ORDER BY rand()";
+                $sql = "SELECT * FROM actividad WHERE disponible = '1' ORDER BY rand()";
 
                 $query = $dbh->prepare($sql);
                 $query->execute();
@@ -171,10 +171,10 @@ include ('includes/dbconnection.php');
                             }                            
                             ?>
 
-                            <p><b>Email OFERTANTE:&nbsp;
+                            <p><b>Email OFERTANTE:
                                     <?php echo htmlentities($mail) ?>
                                 </b></p>
-                            <p><b>Teléfono OFERTANTE:&nbsp;
+                            <p><b>Teléfono OFERTANTE:
                                     <?php echo htmlentities($tlf) ?>
                                 </b></p>
 

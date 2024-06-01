@@ -155,6 +155,7 @@ check_login();
                                                                 href="demanda-detalle.php?did=<?php echo htmlentities($result->idDemanda); ?>"
                                                                 onclick="">Detalles
                                                             </a>
+                                                            
                                                             <a class="btn btn-primary btn-sm btn-danger" role="button"
                                                                 href="demanda-delete.php?deldid=<?php echo htmlentities($result->idDemanda); ?>"
                                                                 onclick="return confirm('Realmente quieres ELIMINAR esta DEMANDA?')">Borrar

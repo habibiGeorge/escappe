@@ -100,7 +100,7 @@ if (isset($_POST['actividadUpdate'])) {
     $query->bindParam(':aid', $aid, PDO::PARAM_STR);
 
     $query->execute();
-    $msg = "Actividad actualizada correctamente";
+    $msg = "Actividad ACTUALIZADA correctamente";
 }
 ?>
 
@@ -299,65 +299,59 @@ if (isset($_POST['actividadUpdate'])) {
                                                 <label class="col-sm-12 pl-0 pr-0">Fecha/s | Hora</label>
 
                                                 <script>
+
                                                     let contador2;
+
                                                     window.onload = function () {
+
                                                         const padreFechas = document.getElementById("padreFechas");
                                                         contador2 = padreFechas ? padreFechas.querySelectorAll('div').length : 0;
-                                                        actualizarBotones();
-                                                        
+                                                        actualizaBotones();
+
                                                     }
 
-                                                    function actualizarBotones() {
-                                                        console.log(padreFechas.querySelectorAll('div'));
-                                                        if (contador2 == 1 || 0) {
-                                                            document.getElementById("fechaHoraDivID0").innerHTML += `<button type="button" class="btn btn-secondary"
-                                                                                                    onclick="addFn2(this)" name="addFecha0"
-                                                                                                    id="addFechaID0">Añadir</button>`
-                                                        } else if (contador2 == 2) {
-                                                            document.getElementById("fechaHoraDivID1").innerHTML += `<button type="button" class="btn btn-secondary"
-                                                                                                    onclick="addFn2(this)" name="addFecha0"
-                                                                                                    id="addFechaID0">Añadir</button>
+                                                    function actualizaBotones() {
 
-                                                                                                <button type="button" class="btn btn-danger"
-                                                                                                    onclick="delFn2(this)" name="addFecha0"
-                                                                                                    id="addFechaID">Quitar</button>`
+                                                        // console.log(padreFechas.querySelectorAll('div'));
+
+                                                        if (contador2 == 1 || 0) {
+                                                            document.getElementById("fechaHoraDivID0").innerHTML += `<button type="button" class="btn btn-secondary" onclick="addFn2(this)" name="addFecha0" id="addFechaID0">Añadir</button>`
+                                                        } else if (contador2 == 2) {
+                                                            document.getElementById("fechaHoraDivID1").innerHTML += `<button type="button" class="btn btn-secondary" onclick="addFn2(this)" name="addFecha1" id="addFechaID1">Añadir</button>
+                                                                            <button type="button" class="btn btn-danger" onclick="delFn2(this)" name="delFecha1" id="delFechaID1">Quitar</button>`
                                                         } else if (contador2 == 3) {
-                                                            document.getElementById("fechaHoraDivID2").innerHTML += `<button type="button" class="btn btn-danger"
-                                                                                                    onclick="delFn2(this)" name="addFecha0"
-                                                                                                    id="addFechaID">Quitar</button>`
+                                                            document.getElementById("fechaHoraDivID2").innerHTML += `<button type="button" class="btn btn-danger" onclick="delFn2(this)" name="delFecha2" id="delFechaID2">Quitar</button>`
                                                         }
                                                     }
 
                                                     function delFn2(e) {
+                                                        // window.alert("Contador en el DELETE al ENTRAR " + contador2);
                                                         let elemento = event.target;
                                                         let elementoPadre = elemento.parentElement;
-                                                        let idCortado = (elementoPadre.id).slice(0,-1);
-                                                        console.log(idCortado);
-                                                        
-                                                        $(e).parent('div').remove();
+                                                        let idCortado = (elementoPadre.id).slice(0, -1);
+
                                                         contador2--;
-                                                        elementoPadre.id = idCortado+contador2;
-                                                        console.log(elementoPadre.id);
-                                                        actualizarBotones();
-                                                        window.alert("Contador del DELETE " + contador2);
-                                                        $('#addFechaID' + (contador2)).show();
-                                                        $('#delFechaID' + (contador2)).show();
+                                                        elementoPadre.id = idCortado + (contador2 - 1);
+                                                        $(e).parent('div').remove();
+                                                        actualizaBotones();
+
+                                                        $('#addFechaID' + contador2).show();
+                                                        $('#delFechaID' + contador2).show();
+                                                        // window.alert("Contador en el DELETE al SALIR " + contador2);
                                                     }
 
                                                     function addFn2(e) {
-
-                                                        
-                                                        console.log("primero");
-                                                        const divEle = document.getElementById("fechaHoraDivID"+(contador2-1));
-                                                        console.log(divEle);
+                                                        // window.alert("Contador en el ADD al ENTRAR " + contador2);
                                                         $('#addFechaID' + (contador2 - 1)).hide();
                                                         $('#delFechaID' + (contador2 - 1)).hide();
 
+                                                        const divEle = document.getElementById("fechaHoraDivID" + (contador2 - 1));
                                                         const div2 = document.createElement("div");
                                                         divEle.appendChild(div2);
+                                                        div2.setAttribute('id', "fechaHoraDivID" + contador2 - 1);
                                                         div2.innerHTML += "<br/>";
 
-                                                        // input type datetime-local
+                                                        // INPUT TYPE datetime-local
                                                         const idt = document.createElement("input");
                                                         idt.setAttribute("type", "datetime-local");
 
@@ -370,12 +364,13 @@ if (isset($_POST['actividadUpdate'])) {
                                                         div2.appendChild(idt);
                                                         div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
 
+                                                        // BTN1 AÑADIR
                                                         const btn1 = document.createElement("input");
                                                         btn1.setAttribute("type", "button");
                                                         btn1.setAttribute("class", "btn btn-secondary");
-                                                        btn1.setAttribute('name', "addFecha" + contador2);
-                                                        btn1.setAttribute("id", "addFechaID" + contador2);
-                                                        btn1.setAttribute("onclick", "addFn2()");
+                                                        btn1.setAttribute('name', "addFecha" + (contador2));
+                                                        btn1.setAttribute("id", "addFechaID" + (contador2));
+                                                        btn1.setAttribute("onclick", "addFn2(this)");
                                                         btn1.setAttribute("value", "Añadir");
                                                         if (contador2 < 2) {
                                                             div2.appendChild(btn1);
@@ -387,15 +382,17 @@ if (isset($_POST['actividadUpdate'])) {
                                                             div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
                                                         }
 
+                                                        // BTN2 QUITAR
                                                         const btn2 = document.createElement("input");
                                                         btn2.setAttribute("type", "button");
                                                         btn2.setAttribute("class", "btn btn-danger");
                                                         btn2.setAttribute("name", "delFecha" + contador2);
                                                         btn2.setAttribute("id", "delFechaID" + contador2);
-                                                        btn2.setAttribute("onclick", "delFn(this)");
+                                                        btn2.setAttribute("onclick", "delFn2(this)");
                                                         btn2.setAttribute("value", "Quitar");
                                                         div2.appendChild(btn2);
                                                         contador2++;
+                                                        // window.alert("Contador en el ADD al SALIR " + contador2);
                                                     }
 
                                                 </script>
@@ -403,17 +400,7 @@ if (isset($_POST['actividadUpdate'])) {
                                                 <?php
 
                                                 $fechasHoras = $result->fechasHora;
-                                                $fechaHora = explode(",", $fechasHoras);
-
-                                                // Para quitar el último elemento del array (Que no debería estar pues está vacío!)
-                                                if (count($fechaHora) == 4) {
-                                                    unset($fechaHora[3]);
-                                                } else if (count($fechaHora) == 3) {
-                                                    unset($fechaHora[2]);
-                                                } else if (count($fechaHora) == 2) {
-                                                    unset($fechaHora[1]);
-                                                }
-
+                                                $fechaHora = explode(",", $fechasHoras, -1);
 
                                                 if (count($fechaHora) == 1) {
 
@@ -425,9 +412,6 @@ if (isset($_POST['actividadUpdate'])) {
                                                                 id="fechaHoraID<?php echo $index ?>"
                                                                 value="<?php echo date('Y-m-d H:i', strtotime($fhLocal)); ?>"
                                                                 min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
-
-                                                            <!-- <button type="button" class="btn btn-secondary" onclick="addFn2()"
-                                                                name="addFecha0" id="addFechaID0">Añadir</button> -->
                                                         </div>
 
                                                     <?php }
@@ -455,11 +439,6 @@ if (isset($_POST['actividadUpdate'])) {
                                                                         id="fechaHoraID<?php echo $index ?>"
                                                                         value="<?php echo date('Y-m-d H:i', strtotime($fhLocal)); ?>"
                                                                         min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
-
-                                                                    <!-- <button type="button" class="btn btn-danger"
-                                                                        onclick="cuentaFechas()" name="addFecha"
-                                                                        id="addFechaID">Quitar</button> -->
-
                                                                 </div>
 
                                                     <?php }

@@ -116,15 +116,17 @@ check_login();
                                                         ?>
                                                             <td>
                                                                 <script>
-                                                                    function confirmaBorrar(consumidor) {
+                                                                    function confirmaBorrarIf(consumidor) {
                                                                         let consu = consumidor;
-                                                                        if (window.confirm('¿Seguro que quieres ELIMINAR este CONSUMIDOR?') == true) {
+                                                                        let aviso = "TAMBIÉN se borrarán sus Reservas y Demandas asociadas";
+                                                                        if (window.confirm('¿Seguro que quieres ELIMINAR este CONSUMIDOR?\n' + aviso) == true) {
                                                                             window.location = "consumidor-delete-if.php?delid=" + consu;
                                                                         }
                                                                     }
                                                                 </script>
+
                                                                 <button type="button" class="btn btn-primary btn-sm btn-danger"
-                                                                    onclick="confirmaBorrar(<?php echo $result->idConsumidor; ?>)">Borrar
+                                                                    onclick="confirmaBorrarIf(<?php echo $result->idConsumidor; ?>)">Borrar
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -206,27 +208,31 @@ check_login();
 
                                                                 </td>
                                                                 <td>
-                                                                <?php 
-                                                                if ($result->fechActualizada) {
-                                                                    echo date('d-m-Y', strtotime($result->fechActualizado)) . "<br/>" . date('H:i', strtotime($result->fechActualizado));;
-                                                                } else {
-                                                                    echo "- - - ";
-                                                                }
-                                                                ?>
+                                                                    <?php
+                                                                    if ($result->fechActualizada) {
+                                                                        echo date('d-m-Y', strtotime($result->fechActualizado)) . "<br/>" . date('H:i', strtotime($result->fechActualizado));
+                                                                        ;
+                                                                    } else {
+                                                                        echo "- - - ";
+                                                                    }
+                                                                    ?>
                                                                 </td>
 
                                                                 <td>
                                                                     <script>
                                                                         function confirmaBorrar(consumidor) {
                                                                             let consu = consumidor;
-                                                                            if (window.confirm('¿Seguro que quieres ELIMINAR este CONSUMIDOR?') == true) {
+                                                                            let aviso = "Se borran Reservas y Demandas asociadas";
+                                                                            if (window.confirm('¿Seguro que quieres ELIMINAR este CONSUMIDOR?\n' + aviso) == true) {
                                                                                 window.location = "consumidor-delete.php?delid=" + consu;
                                                                             }
                                                                         }
                                                                     </script>
+
                                                                     <button type="button" class="btn btn-primary btn-sm btn-danger"
                                                                         onclick="confirmaBorrar(<?php echo $result->idConsumidor; ?>)">Borrar
                                                                     </button>
+
                                                                 </td>
                                                             </tr>
 
@@ -256,7 +262,6 @@ check_login();
     <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
 
     <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/personal-admin.min.js"></script>
 

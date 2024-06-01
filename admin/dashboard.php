@@ -44,208 +44,218 @@ check_login();
                         <div class="row">
 
                             <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="actividad-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Actividades Publicadas</div>
+                                <a href="actividad-gestion.php" id="dashlink">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Actividades Publicadas</div>
 
-                                                <?php
+                                                    <?php
 
-                                                $sql3 = "SELECT idActividad FROM actividad WHERE idOfertante=:admid";
+                                                    $sql3 = "SELECT * FROM actividad WHERE idOfertante =:admid";
 
-                                                $query3 = $dbh->prepare($sql3);
-                                                $query3->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query3->execute();
-                                                $results3 = $query3->fetchAll(PDO::FETCH_OBJ);
-                                                $cuentActividades = $query3->rowCount();
-                                                ?>
+                                                    $query3 = $dbh->prepare($sql3);
+                                                    $query3->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
+                                                    $query3->execute();
+                                                    $results3 = $query3->fetchAll(PDO::FETCH_OBJ);
+                                                    $cuentActividades = $query3->rowCount();
+                                                    ?>
 
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?php echo htmlentities($cuentActividades); ?>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                        <?php echo htmlentities($cuentActividades); ?>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-calendar fa-2x text-primary color-actividad"></i>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-calendar fa-2x text-primary color-actividad"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 </a>
                             </div>
-                            
+
                             <div class="col-xl-3 col-md-6 mb-4">
                                 <a href="actividad-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Actividades que llegan al Máximo de Plazas</div>
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Actividades que llegan al Máximo de Plazas</div>
 
-                                                <?php
+                                                    <?php
 
-                                                $sql = "SELECT idActividad FROM actividad WHERE plazasOcupadas = maxPlazas 
-                                                AND idOfertante =:admid";
+                                                    $cuentActividadesMax = 0;
 
-                                                $query = $dbh->prepare($sql);
-                                                $query->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query->execute();
-                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                $cuentActividadesPlazas = $query->rowCount();
-                                                ?>
+                                                    foreach ($results3 as $contenido3) {
 
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?php echo htmlentities($cuentActividadesPlazas); ?>
+                                                        $arrayDePlazas[] = $contenido3->plazasOcupadas;
+                                                
+                                                        foreach ($arrayDePlazas as $contenido2) {
+                                                            if (str_contains($contenido2, $contenido3->maxPlazas . ",")) {
+                                                                $cuentActividadesMax = $cuentActividadesMax + 1;
+                                                            }
+                                                        }
+
+                                                    }
+                                                    ?>
+
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                        <?php echo $cuentActividadesMax; ?>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-calendar fa-2x text-primary color-actividad-max"></i>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-calendar fa-2x text-primary color-actividad-max"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                            </div>
-
-                            <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="actividad-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Actividades que llegan al mínimo de Plazas</div>
-
-                                                <?php
-
-                                                $sql = "SELECT idActividad FROM actividad WHERE plazasOcupadas = minPlazas 
-                                                AND idOfertante =:admid";
-
-                                                $query = $dbh->prepare($sql);
-                                                $query->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query->execute();
-                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                $cuentActividadesPlazas = $query->rowCount();
-                                                ?>
-
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?php echo htmlentities($cuentActividadesPlazas); ?>
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-calendar fa-2x text-primary color-actividad-min"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 </a>
                             </div>
 
                             <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="reserva-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Reservas recibidas
+                                <a href="actividad-gestion.php" id="dashlink">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Actividades que llegan al mínimo de Plazas</div>
+
+                                                    <?php
+
+                                                    $cuentActividadesMin = 0;
+
+                                                    foreach ($results3 as $contenido3) {
+
+                                                        $arrayDePlazas2[] = $contenido3->plazasOcupadas;
+                                                
+                                                        foreach ($arrayDePlazas2 as $contenido4) {
+                                                            if (str_contains($contenido4, $contenido3->minPlazas . ",")) {
+                                                                $cuentActividadesMin = $cuentActividadesMin + 1;
+                                                            }
+                                                        }
+
+                                                    }
+                                                    ?>
+
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                        <?php echo htmlentities($cuentActividadesMin); ?>
+                                                    </div>
                                                 </div>
-
-                                                <?php
-
-                                                $sql1 = "SELECT idReserva FROM reserva WHERE idOfertante=:admid";
-
-                                                $query1 = $dbh->prepare($sql1);
-                                                $query1->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query1->execute();
-                                                $results1 = $query1->fetchAll(PDO::FETCH_OBJ);
-                                                $cuentaReservas = $query1->rowCount();
-                                                ?>
-
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?php echo htmlentities($cuentaReservas); ?>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-calendar fa-2x text-primary color-actividad-min"></i>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-calendar fa-2x text-primary" aria-hidden="true"></i>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 </a>
                             </div>
 
                             <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="consumidor-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Consumidores distintos a atender
+                                <a href="reserva-gestion.php" id="dashlink">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Reservas recibidas
+                                                    </div>
+
+                                                    <?php
+
+                                                    $sql1 = "SELECT idReserva FROM reserva WHERE idOfertante=:admid";
+
+                                                    $query1 = $dbh->prepare($sql1);
+                                                    $query1->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
+                                                    $query1->execute();
+                                                    $results1 = $query1->fetchAll(PDO::FETCH_OBJ);
+                                                    $cuentaReservas = $query1->rowCount();
+                                                    ?>
+
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                        <?php echo htmlentities($cuentaReservas); ?>
+                                                    </div>
                                                 </div>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-calendar fa-2x text-primary" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
 
-                                                <?php
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <a href="consumidor-gestion.php" id="dashlink">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Consumidores distintos a atender
+                                                    </div>
 
-                                                $sql = "SELECT DISTINCT idConsumidor FROM reserva WHERE idOfertante = :admid
+                                                    <?php
+
+                                                    $sql = "SELECT DISTINCT idConsumidor FROM reserva WHERE idOfertante = :admid
                                             UNION SELECT DISTINCT idConsumidor FROM demanda WHERE idOfertante = :admid";
 
-                                                $query = $dbh->prepare($sql);
-                                                $query->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query->execute();
-                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                $consumidoresAtender = $query->rowCount();
-                                                ?>
-
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                    <?php
-                                                    echo htmlentities($consumidoresAtender);
+                                                    $query = $dbh->prepare($sql);
+                                                    $query->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
+                                                    $query->execute();
+                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                    $consumidoresAtender = $query->rowCount();
                                                     ?>
+
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                        <?php
+                                                        echo htmlentities($consumidoresAtender);
+                                                        ?>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-users fa-2x text-info color-consumidor"></i>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-users fa-2x text-info color-consumidor"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 </a>
                             </div>
 
                             <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="demanda-gestion.php" id="dashlink">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                    Total de Demandas recibidas
+                                <a href="demanda-gestion.php" id="dashlink">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                        Total de Demandas recibidas
+                                                    </div>
+
+                                                    <?php
+
+                                                    $sql1 = "SELECT idDemanda FROM demanda WHERE idOfertante=:admid";
+
+                                                    $query1 = $dbh->prepare($sql1);
+                                                    $query1->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
+                                                    $query1->execute();
+                                                    $results1 = $query1->fetchAll(PDO::FETCH_OBJ);
+                                                    $cuentaDemandas = $query1->rowCount();
+                                                    ?>
+
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                        <?php echo htmlentities($cuentaDemandas); ?>
+                                                    </div>
                                                 </div>
-
-                                                <?php
-
-                                                $sql1 = "SELECT idDemanda FROM demanda WHERE idOfertante=:admid";
-
-                                                $query1 = $dbh->prepare($sql1);
-                                                $query1->bindParam(':admid', $_SESSION['adminid'], PDO::PARAM_STR);
-                                                $query1->execute();
-                                                $results1 = $query1->fetchAll(PDO::FETCH_OBJ);
-                                                $cuentaDemandas = $query1->rowCount();
-                                                ?>
-
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    <?php echo htmlentities($cuentaDemandas); ?>
+                                                <div class="col-auto">
+                                                    <i class="fab fa-fw fa-wpforms fa-2x text-primary color-demanda"></i>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fab fa-fw fa-wpforms fa-2x text-primary color-demanda"></i>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         </a>
@@ -405,8 +415,6 @@ check_login();
 
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="vendor/jquery/jquery.min.js"></script>
-    <!-- <script src="vendor/chart.js/Chart.min.js"></script> -->
-    <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <script src="js/personal-admin.min.js"></script>

@@ -25,6 +25,7 @@ if (isset($_POST['nuevActividad'])) {
   for ($i = 0; $i <= 2; $i++) {
     if (isset($_POST['fechaHora' . $i])) {
       $fechasHora .= $_POST['fechaHora' . $i] . ",";
+      $plazasOcupadas .= "0,";
     }
   }
 
@@ -64,6 +65,7 @@ if (isset($_POST['nuevActividad'])) {
   fechasHora,duracion,tarifa,
   materialNecesario,materialOfrecido,plusMaterial,
   condicionFisica,transporte,
+  plazasOcupadas,
   maxPlazas,minPlazas,
   imagen,
   idOfertante)
@@ -71,6 +73,7 @@ if (isset($_POST['nuevActividad'])) {
   :fechasHora,:duracion,:aprice,
   :necesitaMat,:matofrecido,:plusmaterial,
   :condfisica,:transporte,
+  :plazasocupadas,
   :amax,:amin,
   :aimage,
   :idbidder)";
@@ -89,6 +92,7 @@ if (isset($_POST['nuevActividad'])) {
   $query->bindParam(':fechasHora', $fechasHora, PDO::PARAM_STR);
   $query->bindParam(':duracion', $aduration, PDO::PARAM_STR);
 
+  $query->bindParam(':plazasocupadas', $plazasOcupadas, PDO::PARAM_STR);
   $query->bindParam(':amax', $amax, PDO::PARAM_STR);
   $query->bindParam(':amin', $amin, PDO::PARAM_STR);
 
@@ -270,7 +274,7 @@ if (isset($_POST['nuevActividad'])) {
                   </div>
 
                   <div class="form-group col-md-6">
-                    <label class="col-sm-12 pl-0 pr-0">Precios</label>
+                    <label class="col-sm-12 pl-0 pr-0">Precio</label>
                     <div class="col-sm-12 pl-0 pr-0">
                       <input type="number" class="form-control" name="precioActividad" id="precioActividadID"
                         placeholder="En EUROS..." min="0.00" step="0.5">
@@ -290,8 +294,8 @@ if (isset($_POST['nuevActividad'])) {
 
                       $(e).parent('div').remove();
                       contador--;
-                      $('#addFechaID' + (contador)).show();
-                      $('#delFechaID' + (contador)).show();
+                      $('#addFechaID' + contador).show();
+                      $('#delFechaID' + contador).show();
                     }
 
                     function addFn() {
@@ -306,9 +310,10 @@ if (isset($_POST['nuevActividad'])) {
 
                       const div2 = document.createElement("div");
                       divEle.appendChild(div2);
+                      // div2.setAttribute('id', 'fechaHoraDivID' + contador);
                       div2.innerHTML += "<br/>";
 
-                      // input type datetime-local
+                      // INPUT TYPE datetime-local
                       const idt = document.createElement("input");
                       idt.setAttribute("type", "datetime-local");
                       // idt.classList.add("fechaHora");
@@ -322,6 +327,7 @@ if (isset($_POST['nuevActividad'])) {
                       div2.appendChild(idt);
                       div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
 
+                      // BTN1 Añadir
                       const btn1 = document.createElement("input");
                       btn1.setAttribute("type", "button");
                       btn1.setAttribute("class", "btn btn-secondary");
@@ -351,6 +357,8 @@ if (isset($_POST['nuevActividad'])) {
                       } else {
                         div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
                       }
+
+                      // BTN2 Quitar
                       const btn2 = document.createElement("input");
                       btn2.setAttribute("type", "button");
                       btn2.setAttribute("class", "btn btn-danger");
@@ -407,14 +415,14 @@ if (isset($_POST['nuevActividad'])) {
                   <div class="form-group col-md-6">
                     <label class="col-sm-12 pl-0 pr-0">Número máximo de plazas</label>
                     <div class="col-sm-12 pl-0 pr-0">
-                      <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID" min="0" step="1">
+                      <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID" min="1" step="1">
                     </div>
                   </div>
 
                   <div class="form-group col-md-6">
                     <label class="col-sm-12 pl-0 pr-0">Número mínimo de plazas</label>
                     <div class="col-sm-12 pl-0 pr-0">
-                      <input type="number" class="form-control" name="minPlazas" id="minPlazasID" min="0" step="1">
+                      <input type="number" class="form-control" name="minPlazas" id="minPlazasID" min="1" step="1">
                     </div>
                   </div>
                 </div>
