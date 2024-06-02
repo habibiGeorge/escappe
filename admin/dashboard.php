@@ -83,7 +83,7 @@ check_login();
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
                                                     <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                        Total de Actividades que llegan al Máximo de Plazas</div>
+                                                        Actividades que alcanzan el Máximo de Reservas</div>
 
                                                     <?php
 
@@ -92,7 +92,7 @@ check_login();
                                                     foreach ($results3 as $contenido3) {
 
                                                         $arrayDePlazas[] = $contenido3->plazasOcupadas;
-                                                
+
                                                         foreach ($arrayDePlazas as $contenido2) {
                                                             if (str_contains($contenido2, $contenido3->maxPlazas . ",")) {
                                                                 $cuentActividadesMax = $cuentActividadesMax + 1;
@@ -122,7 +122,7 @@ check_login();
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
                                                     <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                        Total de Actividades que llegan al mínimo de Plazas</div>
+                                                        Actividades con mínimo de Reservas para realizarse</div>
 
                                                     <?php
 
@@ -130,10 +130,11 @@ check_login();
 
                                                     foreach ($results3 as $contenido3) {
 
-                                                        $arrayDePlazas2[] = $contenido3->plazasOcupadas;
-                                                
-                                                        foreach ($arrayDePlazas2 as $contenido4) {
-                                                            if (str_contains($contenido4, $contenido3->minPlazas . ",")) {
+                                                        // $arrayDePlazas2[] = $contenido3->plazasOcupadas;
+                                                        $arrayDePlazas2 = explode(",", $contenido3->plazasOcupadas,-1);
+                                                        foreach ($arrayDePlazas2 as $index => $contenido4) {
+                                                            // if (str_contains($contenido4, $contenido3->minPlazas . ",")) {
+                                                            if ($contenido4 >= $contenido3->minPlazas) {
                                                                 $cuentActividadesMin = $cuentActividadesMin + 1;
                                                             }
                                                         }

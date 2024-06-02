@@ -15,11 +15,11 @@ if (strlen($_SESSION['adminid'] == 0)) {
 
     if (isset($_POST['fotoUpdateAdmin'])) {
 
-        $adminid = $_SESSION['adminid'];
+        // $adminid = $_SESSION['adminid'];
         $adminfoto = $_FILES["adminfoto"]["name"];
         move_uploaded_file($_FILES["adminfoto"]["tmp_name"], "images/perfil/" . $_FILES["adminfoto"]["name"]);
 
-        $sql = "UPDATE ofertante SET foto=:adminfoto WHERE idOfertante=:aid";
+        $sql = "UPDATE ofertante SET foto =:adminfoto WHERE idOfertante =:aid";
 
         $query = $dbh->prepare($sql);
         $query->bindParam(':adminfoto', $adminfoto, PDO::PARAM_STR);
@@ -80,6 +80,7 @@ if (strlen($_SESSION['adminid'] == 0)) {
                                             enctype="multipart/form-data">
 
                                             <?php
+
                                             $adminid = $_SESSION['adminid'];
 
                                             $sql = "SELECT * FROM ofertante WHERE idOfertante=:aid";
@@ -153,7 +154,6 @@ if (strlen($_SESSION['adminid'] == 0)) {
         <?php include ('includes/quit-modal.php'); ?>
 
         <script src="vendor/jquery/jquery.min.js"></script>
-        <!-- <script src="vendor/jquery-easing/jquery.easing.min.js"></script> -->
         <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="js/personal-admin.min.js"></script>
 

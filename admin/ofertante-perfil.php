@@ -10,8 +10,11 @@ if (isset($_POST['perfilUpdate'])) {
     $lName = $_POST['lastname'];
     $mobno = $_POST['mobilenumber'];
     $email = $_POST['email'];
+    $ubication = $_POST['ubication'];
 
-    $sql = "UPDATE ofertante SET nombreUsuario=:adminname,FirstName=:firstname,LastName=:lastname,MobileNumber=:mobilenumber,Email=:email WHERE ID=:aid";
+    $sql = "UPDATE ofertante SET nombreUsuario =:adminname,nombre =:firstname,apellidos =:lastname,
+    telefono =:mobilenumber,emailOfertante =:email,ubicacion =:ubication WHERE idOfertante =:aid";
+    
     $query = $dbh->prepare($sql);
     $query->bindParam(':adminname', $AName, PDO::PARAM_STR);
     $query->bindParam(':firstname', $fName, PDO::PARAM_STR);
@@ -19,6 +22,7 @@ if (isset($_POST['perfilUpdate'])) {
     $query->bindParam(':email', $email, PDO::PARAM_STR);
     $query->bindParam(':mobilenumber', $mobno, PDO::PARAM_STR);
     $query->bindParam(':aid', $adminid, PDO::PARAM_STR);
+    $query->bindParam(':ubication', $ubication, PDO::PARAM_STR);
     $query->execute();
     echo '<script>alert("El Perfil ha sio actualizado")</script>';
 }
@@ -156,9 +160,10 @@ if (isset($_POST['perfilUpdate'])) {
 
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6">Ubicación
-                                                                        <input type="text" class="form-control"
+                                                                        <input type="text" class="form-control" name="ubication"
                                                                             value="<?php echo $row->ubicacion; ?>">
                                                                     </div>
+
                                                                     <div class="col-md-6">Fecha del Registro
                                                                         <input type="text" class="form-control"
                                                                             value="<?php echo $row->fechaRegistro; ?>"

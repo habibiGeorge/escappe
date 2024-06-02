@@ -30,22 +30,14 @@ include ('includes/dbconnection.php');
 
         <div class="container">
 
-            <!-- BUSCADOR de Actividades por input type date -->
-            <!-- <br>
-            <div class="input-group" style="float: right;">
-                <form action="" method="GET">
-                    <input type="datetime-local" name="busqueda">
-                </form>
-            </div> -->
-
             <!-- INICIO DEL BUSCADOR de Actividades -->
             <div id="buscador">
                 <form action="" method="GET">
-                    <input type="text" name="busqueda" placeholder=" ...algún dato row">
+                    <input type="text" name="busqueda" placeholder=" introduce algún campo">
                     <input type="submit" name="busca" value="Buscar" class="btn">
                 </form>
             </div>
-            
+
             <h3>Lista de ACTIVIDADES</h3>
 
             <?php
@@ -115,7 +107,7 @@ include ('includes/dbconnection.php');
                     $query->execute();
                     $results = $query->fetchAll(PDO::FETCH_OBJ);
                 }
-                
+
                 if ($query->rowCount() == 0) {
                     echo ("<span><br>NO SE HAN ENCONTRADO RESULTADOS</span>");
                 }
@@ -137,7 +129,8 @@ include ('includes/dbconnection.php');
 
                         <div class="col-md-3 room-left wow fadeInLeft animated" data-wow-delay=".5s">
                             <a href="actividad-detalles.php?actid=<?php echo htmlentities($result->idActividad); ?>">
-                                <img src="admin/images/<?php echo htmlentities($result->imagen); ?>" class="img-responsive">
+                                <img src="admin/images/actividad/<?php echo htmlentities($result->imagen); ?>"
+                                    class="img-responsive">
                             </a>
                         </div>
 
@@ -168,7 +161,7 @@ include ('includes/dbconnection.php');
                                     $mail = $result2->emailOfertante;
                                     $tlf = $result2->telefono;
                                 }
-                            }                            
+                            }
                             ?>
 
                             <p><b>Email OFERTANTE:

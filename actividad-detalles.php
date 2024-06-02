@@ -168,7 +168,7 @@ if (isset($_POST['confirmaReserva'])) {
                             <div class="selectact_top">
 
                                 <div class="col-md-4 selectact_left wow fadeInLeft animated" data-wow-delay=".5s">
-                                    <img src="admin/images/<?php echo htmlentities($result->imagen); ?>" class="img-responsive"
+                                    <img src="admin/images/actividad/<?php echo htmlentities($result->imagen); ?>" class="img-responsive"
                                         alt="">
                                 </div>
 
@@ -219,7 +219,7 @@ if (isset($_POST['confirmaReserva'])) {
                                             </p>
 
                                             <p><b>Precio:</b>
-                                                <?php echo htmlentities($result->tarifa); ?>&nbsp;€
+                                                <?php echo htmlentities($result->tarifa); ?>&nbsp;EUR
                                             </p>
 
                                             <p><b>Material necesario:</b>
@@ -237,8 +237,17 @@ if (isset($_POST['confirmaReserva'])) {
                                                 ?>
                                             </p>
 
-                                            <p><b>Plus Material:</b>
-                                                <?php echo htmlentities($result->plusMaterial); ?>&nbsp;€
+                                            <!-- PLUS MATERIAL -->
+                                            <p>
+                                                <?php
+                                                if ($result->materialOfrecido == 1 && $result->plusMaterial == 0) {
+                                                    echo 'Plus Material:&nbsp;GRATIS';
+                                                } else if ($result->materialOfrecido == 1 && $result->plusMaterial != 0) {
+                                                    echo 'Plus Material:&nbsp;' . $result->plusMaterial . '&nbsp;EUR';
+                                                } else {
+                                                    echo '';
+                                                }
+                                                ?>
                                             </p>
 
 
@@ -351,7 +360,7 @@ if (isset($_POST['confirmaReserva'])) {
                         }
                     }
                     ?>
-                    
+
                     <div class="container">
                         <div class="selectact_top">
                             <form name="reserva" method="POST">
@@ -383,7 +392,7 @@ if (isset($_POST['confirmaReserva'])) {
                                                 ?>
                                             </select>
                                         </div>
-                                        
+
                                         <?php
 
                                         $plazasReservadasString = $result->plazasOcupadas;
@@ -443,7 +452,7 @@ if (isset($_POST['confirmaReserva'])) {
                                                         select2.disabled = true;
                                                         activaSubmit.disabled = true;
                                                     } else {
-                                                        noHayPlazasMsg.innerText = "";                                                        
+                                                        noHayPlazasMsg.innerText = "";
                                                         activaSubmit.disabled = false;
                                                     }
                                                 } else {

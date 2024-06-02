@@ -56,8 +56,13 @@ if (isset($_POST['nuevActividad'])) {
     $atransport = 0;
   }
 
-  $aimage = "actividad/" . $_FILES["imagenActividad"]["name"];
-  move_uploaded_file($_FILES["imagenActividad"]["tmp_name"], "images/actividad/" . $_FILES["imagenActividad"]["name"]);
+  if ($_FILES["imagenActividad"]["name"] == "") {
+    $aimage = "default.png";
+  } else {
+    
+    $aimage = $_FILES["imagenActividad"]["name"];
+    move_uploaded_file($_FILES["imagenActividad"]["tmp_name"], "images/actividad/". $_FILES["imagenActividad"]["name"]);
+  }
 
   $idOfert = $_SESSION['adminid'];
 
@@ -410,19 +415,19 @@ if (isset($_POST['nuevActividad'])) {
                   </div>
                 </div>
 
-                <!-- maxPlazas, minPlazas -->
+                <!-- minPlazas, maxPlazas -->
                 <div class="row">
                   <div class="form-group col-md-6">
-                    <label class="col-sm-12 pl-0 pr-0">Número máximo de plazas</label>
+                    <label class="col-sm-12 pl-0 pr-0">Número <b>mínimo</b> de plazas</label>
                     <div class="col-sm-12 pl-0 pr-0">
-                      <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID" min="1" step="1">
+                      <input type="number" class="form-control" name="minPlazas" id="minPlazasID" min="1" step="1">
                     </div>
                   </div>
 
                   <div class="form-group col-md-6">
-                    <label class="col-sm-12 pl-0 pr-0">Número mínimo de plazas</label>
+                    <label class="col-sm-12 pl-0 pr-0">Número <b>Máximo</b> de plazas</label>
                     <div class="col-sm-12 pl-0 pr-0">
-                      <input type="number" class="form-control" name="minPlazas" id="minPlazasID" min="1" step="1">
+                      <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID" min="1" step="1">
                     </div>
                   </div>
                 </div>

@@ -2,21 +2,21 @@
 include ('check/login.php');
 check_login();
 
-$aid = intval($_GET['aid']);
+// $aid = intval($_GET['aid']);
 $imgid = intval($_GET['imgid']);
 
 if (isset($_POST['cambiaImagen'])) {
 
   $aimage = $_FILES["aimage"]["name"];
-  move_uploaded_file($_FILES["aimage"]["tmp_name"], "images/actividad/" . $_FILES["aimage"]["name"]);
-  
-  $sql = "UPDATE actividad SET imagen =:aimage WHERE idActividad =:imgid";
-  
-  $query = $dbh->prepare($sql);
 
+  $sql = "UPDATE actividad SET imagen =:aimage WHERE idActividad =:imgid";
+
+  $query = $dbh->prepare($sql);
   $query->bindParam(':imgid', $imgid, PDO::PARAM_STR);
   $query->bindParam(':aimage', $aimage, PDO::PARAM_STR);
   $query->execute();
+
+  move_uploaded_file($_FILES["aimage"]["tmp_name"], "images/actividad/" . $_FILES["aimage"]["name"]);
   $msg = "Imagen de ACTIVIDAD actualizada correctamente";
 }
 ?>
@@ -53,79 +53,80 @@ if (isset($_POST['cambiaImagen'])) {
         <?php include ('includes/header.php'); ?>
 
         <div class="container-fluid" id="container-wrapper">
-          
+
           <div class="row">
 
             <div class="col-lg-12">
 
-            <div class="card mb-4">
+              <div class="card mb-4">
 
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 
-            <h1 class="h3 mb-0 text-gray-800">Cambiar imagen asociada a la ACTIVIDAD</h1>
+                  <h1 class="h3 mb-0 text-gray-800">Cambiar imagen asociada a la ACTIVIDAD</h1>
 
-              <?php
-              if ($error) { ?>
-                <div class="errorWrap">
-                  <strong>ERROR</strong>:
-                  <?php echo htmlentities($error); ?>
-                </div>
-                <?php
-              } else if ($msg) { ?>
-                  <div class="succWrap">
-                    <strong>CORRECTO</strong>:
-                  <?php echo htmlentities($msg); ?>
-                  </div>
-                <?php
-              } ?>
-              
-            </div>
-
-            <div class="card-body">
-
-              <form class="form-horizontal" name="actividadImage" method="POST" enctype="multipart/form-data">
-                
-                <?php                
-                $imgid = intval($_GET['imgid']);
-                
-                $sql = "SELECT imagen FROM actividad WHERE idActividad =:imgid";
-                
-                $query = $dbh->prepare($sql);
-                $query->bindParam(':imgid', $imgid, PDO::PARAM_STR);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                
-                if ($query->rowCount() > 0) {
-
-                  foreach ($results as $result) {
-                    ?>
-                    <div class="form-group">
-                      <label for="focusedinput" class="col-sm-2 control-label">Imagen actual</label>
-                      <div class="col-sm-8">
-                        <img src="images/<?php echo htmlentities($result->imagen); ?>" width="200">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="focusedinput" class="col-sm-2 control-label">Cambiar la imagen</label>
-                      <div class="col-sm-8">
-                        <input type="file" name="aimage" id="aimageID">
-                      </div>
+                  <?php
+                  if ($error) { ?>
+                    <div class="errorWrap">
+                      <strong>ERROR</strong>:
+                      <?php echo htmlentities($error); ?>
                     </div>
                     <?php
-                  }
-                } ?>
+                  } else if ($msg) { ?>
+                      <div class="succWrap">
+                        <strong>CORRECTO</strong>:
+                      <?php echo htmlentities($msg); ?>
+                      </div>
+                    <?php
+                  } ?>
 
-                <div class="row">
-                  <div class="col-sm-8 col-sm-offset-2">
-                    <button type="submit" name="cambiaImagen" class="btn-primary btn">Actualizar</button>
-                  </div>
                 </div>
 
-              </form>
+                <div class="card-body">
 
-            </div>
-            </div>
+                  <form class="form-horizontal" name="actividadImage" method="POST" enctype="multipart/form-data">
+
+                    <?php
+
+                    $imgid = intval($_GET['imgid']);
+
+                    $sql = "SELECT imagen FROM actividad WHERE idActividad =:imgid";
+
+                    $query = $dbh->prepare($sql);
+                    $query->bindParam(':imgid', $imgid, PDO::PARAM_STR);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                    if ($query->rowCount() > 0) {
+
+                      foreach ($results as $result) {
+                        ?>
+                        <div class="form-group">
+                          <label for="focusedinput" class="col-sm-2 control-label">Imagen actual</label>
+                          <div class="col-sm-8">
+                            <img src="images/actividad/<?php echo $result->imagen; ?>" width="200">
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="focusedinput" class="col-sm-2 control-label">Cambiar la imagen</label>
+                          <div class="col-sm-8">
+                            <input type="file" name="aimage" id="aimageID">
+                          </div>
+                        </div>
+                        <?php
+                      }
+                    } ?>
+
+                    <div class="row">
+                      <div class="col-sm-8 col-sm-offset-2">
+                        <button type="submit" name="cambiaImagen" class="btn-primary btn">Actualizar</button>
+                      </div>
+                    </div>
+
+                  </form>
+
+                </div>
+              </div>
             </div>
           </div>
 

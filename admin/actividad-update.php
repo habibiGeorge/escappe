@@ -22,20 +22,51 @@ if (isset($_POST['actividadUpdate'])) {
     $alocation = $_POST['alocation'];
     $aprice = $_POST['aprice'];
 
-    if (isset($_POST['fechaHora0'])) {
+    $sql = "SELECT plazasOcupadas FROM actividad WHERE idActividad =:aid";
+
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':aid', $aid, PDO::PARAM_STR);
+    $query->execute();
+    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+    if ($query->rowCount() > 0) {
+        foreach ($results as $result) {
+            $stringPlazas = $result->plazasOcupadas;
+        }
+    }
+
+    if (isset($_POST['fechaHora0']) && $_POST['fechaHora0'] != "") {
         $fechashora = $_POST['fechaHora0'] . ",";
+
+        if (substr($stringPlazas, 0, 1) == TRUE && substr($stringPlazas, 0, 1) != 0) {
+            $plazasocupa = substr($result->plazasOcupadas, 0, 1) . ",";
+        } else {
+            $plazasocupa = "0,";
+        }
     } else {
         $fechashora = "";
     }
 
-    if (isset($_POST['fechaHora1'])) {
+    if (isset($_POST['fechaHora1']) && $_POST['fechaHora1'] != "") {
         $fechashora .= $_POST['fechaHora1'] . ",";
+
+        if (substr($stringPlazas, 2, 1) == TRUE && substr($stringPlazas, 2, 1) != 0) {
+            $plazasocupa .= substr($result->plazasOcupadas, 2, 1) . ",";
+        } else {
+            $plazasocupa .= "0,";
+        }
     } else {
         $fechashora .= "";
     }
 
-    if (isset($_POST['fechaHora2'])) {
+    if (isset($_POST['fechaHora2']) && $_POST['fechaHora2'] != "") {
         $fechashora .= $_POST['fechaHora2'] . ",";
+
+        if (substr($stringPlazas, 4, 1) == TRUE && substr($stringPlazas, 4, 1) != 0) {
+            $plazasocupa .= substr($result->plazasOcupadas, 4, 1) . ",";
+        } else {
+            $plazasocupa .= "0,";
+        }
     } else {
         $fechashora .= "";
     }
@@ -68,7 +99,7 @@ if (isset($_POST['actividadUpdate'])) {
     $sql = "UPDATE actividad SET nombreActividad=:aname,categoria=:acat,
     caracteristicas=:afeatures,detalles=:adetails,
     localizacion=:alocation,tarifa=:aprice,
-    fechasHora=:fechashora,duracion=:duracion,
+    fechasHora=:fechashora,plazasOcupadas=:plazasocupa,duracion=:duracion,
     maxPlazas=:amax,minPlazas=:amin,
     materialNecesario=:necesitaMat,materialOfrecido=:matofrecido,plusMaterial=:plusmaterial,
     condicionFisica=:condfisica,transporte=:transporte
@@ -86,10 +117,12 @@ if (isset($_POST['actividadUpdate'])) {
     $query->bindParam(':aprice', $aprice, PDO::PARAM_STR);
 
     $query->bindParam(':fechashora', $fechashora, PDO::PARAM_STR);
-    $query->bindParam(':duracion', $aduration, PDO::PARAM_STR);
+    $query->bindParam(':plazasocupa', $plazasocupa, PDO::PARAM_STR);
 
     $query->bindParam(':amax', $amax, PDO::PARAM_STR);
     $query->bindParam(':amin', $amin, PDO::PARAM_STR);
+
+    $query->bindParam(':duracion', $aduration, PDO::PARAM_STR);
 
     $query->bindParam(':necesitaMat', $amat, PDO::PARAM_STR);
     $query->bindParam(':matofrecido', $amatoffer, PDO::PARAM_STR);
@@ -300,99 +333,61 @@ if (isset($_POST['actividadUpdate'])) {
 
                                                 <script>
 
-                                                    let contador2;
+                                                    function fechasOnOff() {
+
+                                                        var input1 = document.getElementById("fechaHoraID0");
+                                                        var input2 = document.getElementById("fechaHoraID1");
+                                                        var input3 = document.getElementById("fechaHoraID2");
+                                                        
+                                                        if (input1.value == "" && input2.value != "" && input3.value != "") {
+                                                            // input1.disabled = true;
+                                                            // input1.value = "";
+                                                            input2.disabled = true;
+                                                            input2.value = "";
+                                                            input3.disabled = true;
+                                                            input3.value = "";
+                                                        } else if (input1.value == "" && input2.value == "" && input3.value == "") {
+                                                            input1.disabled = false;
+                                                            // input1.value = "";
+                                                            input2.disabled = true;
+                                                            input2.value = "";
+                                                            input3.disabled = true;
+                                                            input3.value = "";
+                                                        } else if (input1.value != "" && input2.value == "") {
+                                                            input1.disabled = false;
+                                                            // input1.value = "";
+                                                            input2.disabled = false;
+                                                            input2.value = "";
+                                                            input3.disabled = true;
+                                                            input3.value = "";
+                                                        } else if (input1.value != "" && input2.value != "" && input3.value != "") {
+                                                            input3.disabled = false;
+                                                        } else if (input1.value != "" && input2.value != "") {
+                                                            // input1.disabled = true;
+                                                            // input1.value = "";
+                                                            // input2.disabled = true;
+                                                            // input2.value = "";
+                                                            input3.disabled = false;
+                                                            input3.value = "";                                                        
+                                                        } else if (input1.value != "" && input2.value != "" && input3.value == "") {
+                                                            // input1.disabled = true;
+                                                            // input1.value = "";
+                                                            // input2.disabled = true;
+                                                            // input2.value = "";
+                                                            input3.disabled = true;
+                                                            // input3.value = "";                                                    
+                                                        } else {
+                                                            // input1.disabled = true;
+                                                            // input1.value = "";
+                                                            // input2.disabled = true;
+                                                            // input2.value = "";
+                                                            // input3.disabled = true;
+                                                            // input3.value = "";
+                                                        }
+                                                    }
 
                                                     window.onload = function () {
-
-                                                        const padreFechas = document.getElementById("padreFechas");
-                                                        contador2 = padreFechas ? padreFechas.querySelectorAll('div').length : 0;
-                                                        actualizaBotones();
-
-                                                    }
-
-                                                    function actualizaBotones() {
-
-                                                        // console.log(padreFechas.querySelectorAll('div'));
-
-                                                        if (contador2 == 1 || 0) {
-                                                            document.getElementById("fechaHoraDivID0").innerHTML += `<button type="button" class="btn btn-secondary" onclick="addFn2(this)" name="addFecha0" id="addFechaID0">Añadir</button>`
-                                                        } else if (contador2 == 2) {
-                                                            document.getElementById("fechaHoraDivID1").innerHTML += `<button type="button" class="btn btn-secondary" onclick="addFn2(this)" name="addFecha1" id="addFechaID1">Añadir</button>
-                                                                            <button type="button" class="btn btn-danger" onclick="delFn2(this)" name="delFecha1" id="delFechaID1">Quitar</button>`
-                                                        } else if (contador2 == 3) {
-                                                            document.getElementById("fechaHoraDivID2").innerHTML += `<button type="button" class="btn btn-danger" onclick="delFn2(this)" name="delFecha2" id="delFechaID2">Quitar</button>`
-                                                        }
-                                                    }
-
-                                                    function delFn2(e) {
-                                                        // window.alert("Contador en el DELETE al ENTRAR " + contador2);
-                                                        let elemento = event.target;
-                                                        let elementoPadre = elemento.parentElement;
-                                                        let idCortado = (elementoPadre.id).slice(0, -1);
-
-                                                        contador2--;
-                                                        elementoPadre.id = idCortado + (contador2 - 1);
-                                                        $(e).parent('div').remove();
-                                                        actualizaBotones();
-
-                                                        $('#addFechaID' + contador2).show();
-                                                        $('#delFechaID' + contador2).show();
-                                                        // window.alert("Contador en el DELETE al SALIR " + contador2);
-                                                    }
-
-                                                    function addFn2(e) {
-                                                        // window.alert("Contador en el ADD al ENTRAR " + contador2);
-                                                        $('#addFechaID' + (contador2 - 1)).hide();
-                                                        $('#delFechaID' + (contador2 - 1)).hide();
-
-                                                        const divEle = document.getElementById("fechaHoraDivID" + (contador2 - 1));
-                                                        const div2 = document.createElement("div");
-                                                        divEle.appendChild(div2);
-                                                        div2.setAttribute('id', "fechaHoraDivID" + contador2 - 1);
-                                                        div2.innerHTML += "<br/>";
-
-                                                        // INPUT TYPE datetime-local
-                                                        const idt = document.createElement("input");
-                                                        idt.setAttribute("type", "datetime-local");
-
-                                                        idt.setAttribute('name', 'fechaHora' + contador2);
-                                                        idt.setAttribute('id', 'fechaHoraID' + contador2);
-                                                        idt.setAttribute('min', '<?php echo date('Y-m-d') ?>T00:00');
-                                                        idt.setAttribute('value', '<?php echo date('Y-m-d') ?>T<?php echo date('H:i') ?>');
-                                                        idt.setAttribute('required', 'required');
-
-                                                        div2.appendChild(idt);
-                                                        div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
-
-                                                        // BTN1 AÑADIR
-                                                        const btn1 = document.createElement("input");
-                                                        btn1.setAttribute("type", "button");
-                                                        btn1.setAttribute("class", "btn btn-secondary");
-                                                        btn1.setAttribute('name', "addFecha" + (contador2));
-                                                        btn1.setAttribute("id", "addFechaID" + (contador2));
-                                                        btn1.setAttribute("onclick", "addFn2(this)");
-                                                        btn1.setAttribute("value", "Añadir");
-                                                        if (contador2 < 2) {
-                                                            div2.appendChild(btn1);
-                                                        }
-
-                                                        if (contador2 == 2) {
-                                                            div2.innerHTML += "";
-                                                        } else {
-                                                            div2.innerHTML += "&nbsp;&nbsp;&nbsp;";
-                                                        }
-
-                                                        // BTN2 QUITAR
-                                                        const btn2 = document.createElement("input");
-                                                        btn2.setAttribute("type", "button");
-                                                        btn2.setAttribute("class", "btn btn-danger");
-                                                        btn2.setAttribute("name", "delFecha" + contador2);
-                                                        btn2.setAttribute("id", "delFechaID" + contador2);
-                                                        btn2.setAttribute("onclick", "delFn2(this)");
-                                                        btn2.setAttribute("value", "Quitar");
-                                                        div2.appendChild(btn2);
-                                                        contador2++;
-                                                        // window.alert("Contador en el ADD al SALIR " + contador2);
+                                                        fechasOnOff();
                                                     }
 
                                                 </script>
@@ -402,61 +397,19 @@ if (isset($_POST['actividadUpdate'])) {
                                                 $fechasHoras = $result->fechasHora;
                                                 $fechaHora = explode(",", $fechasHoras, -1);
 
-                                                if (count($fechaHora) == 1) {
+                                                for ($i = 0; $i <= 2; $i++) { ?>
 
-                                                    foreach ($fechaHora as $index => $fhLocal) { ?>
+                                                    <div class="col-sm-12 pl-0 pr-0" id="fechaHoraDivID<?php echo $i ?>">
 
-                                                        <div class="col-sm-12 pl-0 pr-0" id="fechaHoraDivID<?php echo $index ?>">
+                                                        <input type="datetime-local" name="fechaHora<?php echo $i; ?>"
+                                                            onblur="fechasOnOff()" id="fechaHoraID<?php echo $i ?>" value="<?php if ($fechaHora[$i])
+                                                                   echo date('Y-m-d H:i', strtotime($fechaHora[$i]));
+                                                               else
+                                                                   echo ''; ?>"
+                                                            min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
+                                                    </div>
 
-                                                            <input type="datetime-local" name="fechaHora<?php echo $index ?>"
-                                                                id="fechaHoraID<?php echo $index ?>"
-                                                                value="<?php echo date('Y-m-d H:i', strtotime($fhLocal)); ?>"
-                                                                min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
-                                                        </div>
-
-                                                    <?php }
-
-                                                } else if (count($fechaHora) == 2) {
-
-                                                    foreach ($fechaHora as $index => $fhLocal) { ?>
-
-                                                            <div class="col-sm-12 pl-0 pr-0" id="fechaHoraDivID<?php echo $index ?>">
-
-                                                                <input type="datetime-local" name="fechaHora<?php echo $index ?>"
-                                                                    id="fechaHoraID<?php echo $index ?>"
-                                                                    value="<?php echo date('Y-m-d H:i', strtotime($fhLocal)); ?>"
-                                                                    min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
-                                                            </div>
-                                                    <?php }
-
-                                                } else if (count($fechaHora) == 3) {
-
-                                                    foreach ($fechaHora as $index => $fhLocal) { ?>
-
-                                                                <div class="col-sm-12 pl-0 pr-0" id="fechaHoraDivID<?php echo $index ?>">
-
-                                                                    <input type="datetime-local" name="fechaHora<?php echo $index ?>"
-                                                                        id="fechaHoraID<?php echo $index ?>"
-                                                                        value="<?php echo date('Y-m-d H:i', strtotime($fhLocal)); ?>"
-                                                                        min="<?php echo date('Y-m-d') ?>T00:00">&nbsp;&nbsp;
-                                                                </div>
-
-                                                    <?php }
-
-                                                } else { ?>
-
-                                                            <div class="col-sm-12 pl-0 pr-0" id="fechaHoraDivID3">
-
-                                                                <input type="datetime-local" name="fechaHora0" id="fechaHoraID0" value=""
-                                                                    min="<?php echo date('Y-m-d'); ?>T00:00">&nbsp;&nbsp;
-
-                                                                <button type="button" class="btn btn-secondary" onclick="addFn()"
-                                                                    name="addFecha0" id="addFechaID0">Añadir</button>
-                                                            </div>
-                                                    <?php
-                                                }
-
-                                                ?>
+                                                <?php } ?>
 
                                             </div>
 
@@ -473,18 +426,18 @@ if (isset($_POST['actividadUpdate'])) {
                                         <div class="row">
 
                                             <div class="form-group col-md-6">
-                                                <label class="col-sm-12 pl-0 pr-0">Número máximo de plazas</label>
+                                                <label class="col-sm-12 pl-0 pr-0">Número <b>mínimo</b> de plazas</label>
                                                 <div class="col-sm-12 pl-0 pr-0">
-                                                    <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID"
-                                                        min="0" value="<?php echo htmlentities($result->maxPlazas); ?>">
+                                                    <input type="number" class="form-control" name="minPlazas" id="minPlazasID"
+                                                        min="0" value="<?php echo htmlentities($result->minPlazas); ?>">
                                                 </div>
                                             </div>
 
                                             <div class="form-group col-md-6">
-                                                <label class="col-sm-12 pl-0 pr-0">Número mínimo de plazas</label>
+                                                <label class="col-sm-12 pl-0 pr-0">Número <b>Máximo</b> de plazas</label>
                                                 <div class="col-sm-12 pl-0 pr-0">
-                                                    <input type="number" class="form-control" name="minPlazas" id="minPlazasID"
-                                                        min="0" value="<?php echo htmlentities($result->minPlazas); ?>">
+                                                    <input type="number" class="form-control" name="maxPlazas" id="maxPlazasID"
+                                                        min="0" value="<?php echo htmlentities($result->maxPlazas); ?>">
                                                 </div>
                                             </div>
 
@@ -571,10 +524,9 @@ if (isset($_POST['actividadUpdate'])) {
                                             <label for="focusedinput" class="col-sm-12 control-label">Imagen
                                                 asociada</label>
                                             <div class="col-sm-6">
-                                                <img src="images/<?php echo htmlentities($result->imagen); ?>"
+                                                <img src="images/actividad/<?php echo $result->imagen; ?>"
                                                     width="200">&nbsp;&nbsp;&nbsp;
-                                                <a
-                                                    href="actividad-cambia-imagen.php?imgid=<?php echo htmlentities($result->idActividad); ?>">Cambiar
+                                                <a href="actividad-cambia-imagen.php?imgid=<?php echo $result->idActividad; ?>">Cambiar
                                                     Imagen</a>
                                             </div>
                                         </div>

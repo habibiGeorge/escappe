@@ -164,6 +164,7 @@ if (isset($_REQUEST['bckid'])) {
 
                                         <tbody>
                                             <?php
+                                            
                                             $idadmin = $_SESSION['adminid'];
 
                                             $sql = "SELECT * FROM reserva WHERE idOfertante =:idadmin";
@@ -266,20 +267,21 @@ if (isset($_REQUEST['bckid'])) {
 
                                                         <?php if ($result->estado == 2) { ?>
                                                             <td>
-                                                                <!-- Cancelada<br> -->
+                                                                <!-- Cancelada -->
                                                                 <button type="button" class="btn btn-danger"
                                                                     onclick="confirmaEliminar()">Borrar
                                                                 </button>
                                                             </td>
                                                         <?php } else if ($result->estado == 1) { ?>
                                                                 <td>
-                                                                    <!-- Confirmada<br> -->
+                                                                    <!-- Confirmada -->
                                                                     <button type="button" class="btn btn-outline-danger"
                                                                         onclick="confirmaEliminar()">Borrar
                                                                     </button>
                                                                 </td>
                                                         <?php } else { ?>
                                                                 <td>
+                                                                    <!-- Por Confirmar / Cancelar : estado == 0 -->
                                                                     <a class="btn btn-denger" role="button"
                                                                         href="reserva-gestion.php?bkid=<?php echo htmlentities($result->idReserva); ?>"
                                                                         onclick="return confirm('Realmente quieres CANCELAR esta Reserva?')">Cancelar
